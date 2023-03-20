@@ -1,0 +1,28 @@
+import Joi from 'joi';
+
+const createOrEditTimesheetValidations = (req, res, next) => {
+  const requirementsSchema = Joi.object({
+    description: Joi.string().min(5).required(),
+    validated: Joi.boolean().required(),
+    startDate: Joi.date().required(),
+    endDate: Joi.date().required(),
+    hours: Joi.number().required(),
+    employee: Joi.string().min(5).required(),
+    project: Joi.string().min(5).required(),
+    task: Joi.string().min(5),
+  });
+  const validation = requirementsSchema.validate(req.body);
+
+  if (validation.error) {
+    return res.status(400).json({
+      message: 'There was an error during the validation of the request',
+      data: undefined,
+      error: validation.error.details[0].message,
+    });
+  }
+  return next();
+};
+
+export default {
+  createOrEditTimesheetValidations,
+};
